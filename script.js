@@ -1,52 +1,34 @@
-var form = document.getElementById('addForm');
-var itemList = document.getElementById('items');
-
-
-
-form.addEventListener('submit', addEvent);
-itemList.addEventListener('click', removeEvent);
-
-function addEvent(e) {
-    e.preventDefault();
-    var item = document.getElementById('item').value;
-
-    var newItem = document.createElement('li');
-    newItem.className = 'list-group-item';
-    newItem.appendChild(document.createTextNode(item));
-
-    var deletebtn = document.createElement('button');
-    deletebtn.className = 'btn btn-danger btn-sm float-right delete';
-    deletebtn.appendChild(document.createTextNode('X'));
-    newItem.appendChild(deletebtn);
-
-    itemList.appendChild(newItem);
-    item.value = "";
+var search = document.getElementById('sear');
+var form = document.getElementById('form');
+form.addEventListener("submit", (e) => {
+  e.preventDefault();
+  search_movie();
+});
+function search_movie() {
+    var url_2 = `https://api.tvmaze.com/search/shows?q=${search.value}`;
+    // console.log(search.value);
+    fetch(url_2)
+        .then((res) => {
+            // console.log(res.json());
+            return res.json();
+        })
+        .then((data) => {
+            console.log(data);
+            add_search(data);
+        });
 }
-
-function removeEvent(e) {
-    if (e.target.classList.contains('delete')) {
-        if (confirm('delete karna hai?')) {
-            var li = e.target.parentElement;
-            itemList.removeChild(li);
-        }
-    }
-}
-
-
-function myFunction() {
-    var input, filter, ul, li, a, i, textValue;
-    input = document.getElementById('filter');
-    filter = input.value.toUpperCase();
-    ul = document.getElementById('items');
-    li = ul.getElementsByTagName('li');
-
-    for (i = 0; i < li.length; i++) {
-        textValue = li[i].textContent || li[i].innerText;
-        console.log(textValue);
-        if (textValue.toUpperCase().includes(filter)) {
-            li[i].style.display = "";
-        } else {
-            li[i].style.display = "none";
-        }
-    }
-}
+function add_search(data) {
+      var search_movies = document.querySelector(".s-box"); 
+      var movies = document.querySelector(".moviess");
+      movies.innerHTML='';
+      console.log(data);
+      for (const movie in data) {
+          const imgg = data[movie].show.image.original;
+          // console.log(imgg);
+          movies.innerHTML += `<div class='movie'>
+                      <img src=${imgg} height="200"/>  
+                  </div>`;
+      };
+      search_movies.style.visibility = "visible";
+    
+  };
